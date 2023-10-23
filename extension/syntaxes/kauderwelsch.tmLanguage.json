@@ -1,29 +1,95 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "Kauderwelsch",
+	"name": "kauderwelsch",
 	"patterns": [
 		{
 			"include": "#keywords"
 		},
 		{
+			"include": "#constants"
+		},
+		{
 			"include": "#strings"
+		},
+		{
+			"include": "#scopes"
 		}
 	],
 	"repository": {
 		"keywords": {
-			"patterns": [{
-				"name": "keyword.control.kauderwelsch",
-				"match": "\\b(if|while|for|return)\\b"
-			}]
+			"patterns": [
+				{
+					"name": "keyword.control.kdw",
+					"match": "(?i)\\b(is|fruitloop|diy|noob|yeet)\\b"
+				},
+				{
+					"name": "support.function.special.kdw",
+					"match": "(?i)\\b(lol|afk|kys)\\b"
+				}
+			]
+		},
+		"constants": {
+			"patterns": [
+				{
+					"match": "\\b(?i:(0b))([01]+)",
+					"captures": {
+						"1": {
+							"name": "storage.type.binary.kdw"
+						},
+						"2": {
+							"name": "constant.numeric.binary.kdw"
+						}
+					}
+				},
+				{
+					"match": "\\b(?i:(0b))([01]+)",
+					"captures": {
+						"1": {
+							"name": "storage.type.hexadecimal.kdw"
+						},
+						"2": {
+							"name": "constant.numeric.hexadecimal.kdw"
+						}
+					}
+				},
+				{
+					"name": "constant.numeric.decimal.kdw",
+					"match": "(?i)\\b\\d+"
+				}
+			]
 		},
 		"strings": {
-			"name": "string.quoted.double.kauderwelsch",
+			"name": "string.quoted.double.kdw",
 			"begin": "\"",
 			"end": "\"",
 			"patterns": [
 				{
-					"name": "constant.character.escape.kauderwelsch",
+					"name": "constant.character.escape.kdw",
 					"match": "\\\\."
+				}
+			]
+		},
+		"scopes": {
+			"name": "entity.other.function-call.kdw",
+			"begin": "(\\*)(\\w+)\\b",
+			"end": "(\\*)",
+			"beginCaptures": {
+				"1": {
+					"name": "comment.weak.kdw"
+				},
+				"2": {
+					"name": "support.function.kdw"
+				}
+			},
+			"endCaptures": {
+				"1": {
+					"name": "comment.weak.kdw"
+				}
+			},
+			"patterns": [
+				{
+					"name": "keyword.other.kdw",
+					"match": "\\bwith\\b"
 				}
 			]
 		}
