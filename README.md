@@ -21,11 +21,12 @@ IF - Q&A
 ELSE - "Oh no, anyway"  
 WHILE - "fruitloop"  
 FOR - "4"  
-
+#### Loop Brackets:
+:) :(
 
 
 ### Logical Operators
-NOT "Not the"...  
+NOT "not the"  
 AND  
 OR
 
@@ -44,7 +45,7 @@ LESS THAN - v
 GREATER EQUAL - ^€  
 LESS EQUAL - v€  
 
-
+### Special functions
 OUTPUT - "LOL"  
 INPUT -   
 SLEEP - "AFK"  
@@ -52,9 +53,7 @@ OPEN -
 CLOSE - "Fuck off"  
 
 
-(:
 
-:(
 
 
 Left:

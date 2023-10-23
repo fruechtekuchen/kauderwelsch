@@ -1,0 +1,29 @@
+[keywords]
+var_decl = "noob"
+var_assign = "is"
+
+func_decl = ["diy", "DIY"]
+func_parameter_seperator = [":", "with"]
+func_return = "yeet"
+
+[logical_operators]
+not = "not the"
+and = "and"
+or = "or"
+
+[arithmetic_operators]
+addition = "w/"
+subtraction = "w/o"
+multiplication = "x"
+division = "/"
+modulo = "rest"
+
+[comparison_operators]
+greater_than = "^"
+greater_equal = "^€"
+equal = "€"
+less_equal = "v€"
+less_than = "v"
+
+
+
