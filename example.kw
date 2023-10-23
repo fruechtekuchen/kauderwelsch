@@ -1,1 +1,9 @@
+diy modulo : value, divisor
+    fruitloop value ^€ divisor :)
+        value is value w/o divisor
+    :(
+yeet value
 
+value is 101
+divisor is 10
+LOL *modulo with value, divisor*
