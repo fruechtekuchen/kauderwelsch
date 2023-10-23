@@ -5,10 +5,10 @@ Kauderwelsch is an esotheric programming language consisting of internet slang a
 
 
 ## Keyword Translations
-CONST - "ngl"
+CONST - "ngl"  
 
 ### Variables
-VARIABLE DECLARATION - "noob"
+VARIABLE DECLARATION - "noob"  
 VARIABLE ASSIGMENT - "You know [x] is something of a [y] itsself"
 
 ### Functions
@@ -25,8 +25,8 @@ FOR - "4"
 
 
 ### Logical Operators
-NOT "Not the"...
-AND
+NOT "Not the"...  
+AND  
 OR
 
 
@@ -45,11 +45,11 @@ GREATER EQUAL - ^€
 LESS EQUAL - v€  
 
 
-OUTPUT - "LOL"
-INPUT - 
-SLEEP - "AFK"
-OPEN - 
-CLOSE - "Fuck off"
+OUTPUT - "LOL"  
+INPUT -   
+SLEEP - "AFK"  
+OPEN -   
+CLOSE - "Fuck off"  
 
 
 (:
@@ -59,6 +59,6 @@ CLOSE - "Fuck off"
 
 Left:
 
-NSFW
-BTW
+NSFW,
+BTW,
 cancel
