@@ -1,0 +1,25 @@
+{
+  "name": "kauderwelsch",
+  "displayName": "Kauderwelsch",
+  "description": "Syntax highlighting for Kauderwelsch",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.83.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "kauderwelsch",
+      "aliases": ["Kauderwelsch", "kauderwelsch"],
+      "extensions": [".kw",".kdw"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "kauderwelsch",
+      "scopeName": "source.kdw",
+      "path": "./syntaxes/kauderwelsch.tmLanguage.json"
+    }]
+  }
+}
