@@ -1,6 +1,6 @@
 [variables]
 var_decl = "noob"
-var_assign = "is"
+var_assign = ["is", "is a"]
 
 [function]
 func_decl = ["diy", "DIY"]
@@ -10,8 +10,8 @@ func_return = "yeet"
 [conditions]
 cond_if = "Q:"
 cond_if2 = "A:"
-cond_brackets_open = ":)"
-cond_brackets_close = ":("
+cond_brackets_open = ':\)'
+cond_brackets_close = ':\('
 cond_while = "fruitloop"
 cond_for = "4"
 
@@ -28,8 +28,8 @@ division = "/"
 modulo = "rest"
 
 [comparison_operators]
-greater_than = "^"
-greater_equal = "^€"
+greater_than = '^'
+greater_equal = '^€'
 equal = "€"
 less_equal = "v€"
 less_than = "v"

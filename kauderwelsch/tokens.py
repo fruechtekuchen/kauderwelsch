@@ -10,8 +10,8 @@ FUNC_RETURN = "\b(yeet)\b"
 # conditions
 COND_IF = "\b(Q:)\b"
 COND_IF2 = "\b(A:)\b"
-COND_BRACKETS_OPEN = "\b(:))\b"
-COND_BRACKETS_CLOSE = "\b(:()\b"
+COND_BRACKETS_OPEN = "\b(:\))\b"
+COND_BRACKETS_CLOSE = "\b(:\()\b"
 COND_WHILE = "\b(fruitloop)\b"
 COND_FOR = "\b(4)\b"
 
