@@ -10,6 +10,8 @@ PRINT = "lol"
 EXIT = "kys"
 SLEEP = "afk"
 
+FUNCCALL = r"\*"
+
 KEYWORDS = f"\\b({VARDECL}|{RETURN}|{FUNCDECL})"
 WHITESPACE = r"\s+"
 SPECIAL = f"(i?)\b({PRINT}|{EXIT}|{SLEEP})\b"
@@ -25,21 +27,28 @@ RESERVED = [VARDECL, FUNCDECL, RETURN, PRINT, EXIT, SLEEP, "is", "with"]
 class RDParser:
     def __init__(self, file: str):
         self.code = CodeWrapper(file)
-        self.namespaces = {"global": {}}
+        # * print added to globals for testing purpose.
+        # ? could also be loaded from config
+        self.namespaces = {"global": {"print": "func"}}
         self.namespace = "global"
         self.output = ""
         self.failed = False
 
     def is_valid_name(self, name: str) -> bool:
-        if name in self.namespaces[self.namespace]:
+        if e := self.get_name_entry(name):
+            self.fail(f"{name!r} is already as {e!r} defined")
             return False
         if name in RESERVED:
+            self.fail(f"{name!r} is reserved")
             return False
-        # ? More tests needed?
+        # ? are there more tests needed
         return True
 
     def get_name_entry(self, name: str):
         return self.namespaces[self.namespace].get(name, "")
+
+    def set_name_entry(self, name: str, v: str):
+        self.namespaces[self.namespace][name] = v
 
     def parse(self):
         while not self.code.end() and not self.failed:
@@ -49,16 +58,17 @@ class RDParser:
                 self.parse_special(r)
             elif r := self.code.match(IDENTIFIER):
                 self.parse_assigment(r)
+            elif r := self.code.match(FUNCCALL):
+                self.parse_func_call()
+                self.parse_newline()
             else:
-                print(
+                self.fail(
                     f"Unable to parse at {self.code.buffer_index} -> \n{self.code.buffer[self.code.buffer_index+20:]}"
                 )
-                self.failed = True
 
     def parse_newline(self):
-        if not self.code.newline():
-            print("Expected newline")
-            self.failed = True
+        if not self.failed and not self.code.newline():
+            self.fail("Expected newline")
 
     def parse_keyword(self, keyword):
         if keyword == "noob":
@@ -66,8 +76,7 @@ class RDParser:
         elif keyword == "diy":
             self.parse_func_decl()
         else:
-            print(f"Unexpected keyword '{keyword}'")
-            self.failed = True
+            self.fail(f"Unexpected keyword '{keyword}'")
         return 0
 
     def parse_special(self, special):
@@ -76,28 +85,26 @@ class RDParser:
     def parse_var_decl(self):
         variable = self.code.match(IDENTIFIER)
         if not variable:
-            print("No variable after noob")
-            self.failed = True
+            self.fail("No variable after noob")
             return
         if not self.is_valid_name(variable):
-            print("Invalid variable name")
-            self.failed = True
             return
-        self.namespaces["global"][variable] = "var"
+        self.set_name_entry(variable, "var_")
         if self.code.expect("is"):
             self.parse_assigment(variable)
         else:
             self.parse_newline()
 
     def parse_assigment(self, variable: str):
-        if self.get_name_entry(variable) != "var":
-            print("Unkown identifier")
-            self.failed = True
+        e = self.get_name_entry(variable)
+        if e != "var" and e != "var_":
+            self.fail("Unkown identifier")
             return
         if not self.code.match("is"):
-            print("is Operator missing")
-            self.failed = True
+            self.fail("is Operator missing")
             return
+        if e == "var_":
+            self.set_name_entry(variable, "var")
         self.output += f"{variable} = "
         self.parse_expression()
         self.output += "\n"
@@ -105,6 +112,25 @@ class RDParser:
 
     def parse_func_decl(self):
         pass
+
+    def parse_func_call(self):
+        func = self.code.match(IDENTIFIER)
+        if not func:
+            self.fail("Function missing")
+            return
+        if self.get_name_entry(func) != "func":
+            self.fail(f"{func!r} is not a function")
+            return
+        self.output += func + "("
+        if self.code.match("with"):
+            self.parse_expression()
+            while self.code.match(r"\,") and not self.failed:
+                self.output += ", "
+                self.parse_expression()
+        if not self.code.match(FUNCCALL):
+            self.fail("Missing closing *")
+            return
+        self.output += ")"
 
     def parse_expression(self):
         self.parse_primary()
@@ -120,13 +146,27 @@ class RDParser:
         return True
 
     def parse_primary(self):
-        # TODO: variables, function calls and brackets
-        v = self.code.match(VALUE)
-        if not v:
-            print("Expected Value")
-            self.failed = True
-            return ""
-        self.output += v
+        if v := self.code.match(VALUE):
+            self.output += v
+        elif v := self.code.match(IDENTIFIER):
+            e = self.get_name_entry(v)
+            if e == "var_":
+                self.fail(f"{v!r} not initialised")
+            elif e == "var":
+                self.output += v
+            else:
+                self.fail(f"{v!r} not a variable")
+        elif self.code.match(FUNCCALL):
+            self.parse_func_call()
+        elif self.code.match(r"\("):
+            self.output += "("
+            self.parse_expression()
+            if not self.code.match(r"\)"):
+                self.fail("Missing closing bracket")
+                return
+            self.output += ")"
+        else:
+            self.fail("Unkown token in expression")
 
     def write(self, file):
         if not self.failed:
@@ -134,3 +174,8 @@ class RDParser:
                 f.write(self.output)
         else:
             print("Cant write because parsing failed")
+
+    def fail(self, msg):
+        if not self.failed:
+            print(f"Error: {msg}")
+            self.failed = True
