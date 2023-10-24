@@ -1,8 +1,7 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
-from enum import StrEnum, auto
 from .codewrapper import CodeWrapper
 
+# TODO: Load these values from generated tokens file
 VARDECL = "noob"
 FUNCDECL = "diy"
 RETURN = "yeet"
@@ -21,21 +20,6 @@ OPERATORS = r"w/o|w/|x|/"
 OP_TRANS = {"w/": "+", "w/o": "-", "x": "*", "/": "/"}
 
 RESERVED = [VARDECL, FUNCDECL, RETURN, PRINT, EXIT, SLEEP, "is", "with"]
-
-
-class NodeType(StrEnum):
-    ROOT = auto()
-    VARDECL = auto()
-
-
-@dataclass
-class Node:
-    node_type: NodeType
-    value: str = ""
-    children: list[Node] = field(default_factory=list)
-
-    def __repr__(self):
-        return f"Node(type: {self.node_type.name}, value: {self.value!r}, children: {len(self.children)})"
 
 
 class RDParser:
@@ -123,8 +107,6 @@ class RDParser:
         pass
 
     def parse_expression(self):
-        # expr = self.parse_sum()
-        # self.output += expr
         self.parse_primary()
         while self.parse_operator() and not self.failed:
             self.parse_primary()
@@ -136,30 +118,6 @@ class RDParser:
         self.code.consume()
         self.output += " " + OP_TRANS[o] + " "
         return True
-
-    def parse_sum(self):
-        left = self.parse_term()
-        if o := self.code.expect(r"w/o?"):
-            self.code.consume()
-            left += " + " if o == "w/" else " - "
-            left += self.parse_sum()
-        return left
-
-    def parse_term(self):
-        left = self.parse_factor()
-        if o := self.code.expect(r"x|/"):
-            self.code.consume()
-            left += " * " if o == "x" else " / "
-            left += self.parse_term()
-        return left
-
-    def parse_factor(self):
-        # TODO: unary operators
-        return self.parse_exponent()
-
-    def parse_exponent(self):
-        # TODO: exponents
-        return self.parse_primary()
 
     def parse_primary(self):
         # TODO: variables, function calls and brackets
