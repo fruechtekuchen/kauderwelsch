@@ -5,6 +5,7 @@ from .codewrapper import CodeWrapper
 VARDECL = "noob"
 FUNCDECL = "diy"
 RETURN = "yeet"
+WHILE = "fruitloop"
 
 PRINT = "lol"
 EXIT = "kys"
@@ -12,7 +13,7 @@ SLEEP = "afk"
 
 FUNCCALL = r"\*"
 
-KEYWORDS = f"\\b({VARDECL}|{RETURN}|{FUNCDECL})"
+KEYWORDS = f"\\b({VARDECL}|{RETURN}|{FUNCDECL}|{WHILE})"
 WHITESPACE = r"\s+"
 SPECIAL = f"(i?)\b({PRINT}|{EXIT}|{SLEEP})\b"
 IDENTIFIER = r"\b\w+\b"
@@ -33,6 +34,7 @@ class RDParser:
         self.namespace = "global"
         self.output = ""
         self.failed = False
+        self.tab_index = 0
 
     def is_valid_name(self, name: str) -> bool:
         if e := self.get_name_entry(name):
@@ -52,32 +54,56 @@ class RDParser:
 
     def parse(self):
         while not self.code.end() and not self.failed:
-            if r := self.code.match(KEYWORDS):
-                self.parse_keyword(r)
-            elif r := self.code.match(SPECIAL):
-                self.parse_special(r)
-            elif r := self.code.match(IDENTIFIER):
-                self.parse_assigment(r)
-            elif r := self.code.match(FUNCCALL):
-                self.parse_func_call()
-                self.parse_newline()
-            else:
-                self.fail(
-                    f"Unable to parse at {self.code.buffer_index} -> \n{self.code.buffer[self.code.buffer_index+20:]}"
-                )
+            self.parse_main()
+            self.parse_newline()
 
-    def parse_newline(self):
-        if not self.failed and not self.code.newline():
+    def parse_main(self):
+        if r := self.code.match(KEYWORDS):
+            self.parse_keyword(r)
+        elif r := self.code.match(SPECIAL):
+            self.parse_special(r)
+        elif r := self.code.match(IDENTIFIER):
+            self.parse_assigment(r)
+        elif r := self.code.match(FUNCCALL):
+            self.parse_func_call()
+        else:
+            self.fail(
+                f"Unable to parse at {self.code.buffer_index} -> \n{self.code.buffer[self.code.buffer_index+20:]}"
+            )
+
+    def parse_newline(self, fail: bool = True):
+        if not self.failed and not self.code.consume_newline():
             self.fail("Expected newline")
+        self.add_newline()
+
+    def add_newline(self):
+        self.output += "\n" + "\t" * self.tab_index
 
     def parse_keyword(self, keyword):
-        if keyword == "noob":
+        if keyword == VARDECL:
             self.parse_var_decl()
-        elif keyword == "diy":
+        elif keyword == FUNCDECL:
             self.parse_func_decl()
+        elif keyword == WHILE:
+            self.parse_while()
         else:
             self.fail(f"Unexpected keyword '{keyword}'")
         return 0
+
+    def parse_while(self):
+        # TODO: implement correct handling of newlines
+        self.output += "while "
+        self.parse_expression()
+        self.output += ":"
+        if not self.code.match(r":\)"):
+            self.fail("Missing happy smiley")
+            return
+        self.tab_index += 1
+        self.parse_newline()
+        while not self.code.match(r":\(") and not self.failed:
+            self.parse_main()
+            self.parse_newline()
+        self.tab_index -= 1
 
     def parse_special(self, special):
         pass
@@ -90,25 +116,22 @@ class RDParser:
         if not self.is_valid_name(variable):
             return
         self.set_name_entry(variable, "var_")
-        if self.code.expect("is"):
-            self.parse_assigment(variable)
-        else:
-            self.parse_newline()
+        if self.code.match("is"):
+            self.parse_assigment(variable, skip_is=True)
 
-    def parse_assigment(self, variable: str):
+    def parse_assigment(self, variable: str, skip_is: bool = False):
         e = self.get_name_entry(variable)
         if e != "var" and e != "var_":
-            self.fail("Unkown identifier")
+            self.fail(f"Unkown identifier: {variable!r}")
             return
-        if not self.code.match("is"):
-            self.fail("is Operator missing")
-            return
+        if not skip_is:
+            if not self.code.match("is"):
+                self.fail("is Operator missing")
+                return
         if e == "var_":
             self.set_name_entry(variable, "var")
         self.output += f"{variable} = "
         self.parse_expression()
-        self.output += "\n"
-        self.parse_newline()
 
     def parse_func_decl(self):
         pass
@@ -138,10 +161,9 @@ class RDParser:
             self.parse_primary()
 
     def parse_operator(self):
-        o = self.code.expect(OPERATORS)
+        o = self.code.match(OPERATORS)
         if not o:
             return False
-        self.code.consume()
         self.output += " " + OP_TRANS[o] + " "
         return True
 

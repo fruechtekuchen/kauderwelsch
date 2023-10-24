@@ -12,8 +12,8 @@ if __name__ == "__main__":
         print("Invalid file")
         exit()
     out = name + ".kdw.py"
-    if os.path.exists(out):
-        os.system(f"rm {out}")
+    # if os.path.exists(out):
+    #     os.system(f"rm {out}")
     parser = RDParser(file)
     parser.parse()
     parser.write(out)
