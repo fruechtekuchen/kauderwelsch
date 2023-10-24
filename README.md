@@ -47,7 +47,7 @@ LESS EQUAL - v€
 
 ### Special functions
 OUTPUT - "LOL"  
-INPUT -   
+INPUT - "gimme"  
 SLEEP - "AFK"  
 OPEN -   
 CLOSE - "Fuck off"  

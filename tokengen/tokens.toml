@@ -1,10 +1,19 @@
-[keywords]
+[variables]
 var_decl = "noob"
 var_assign = "is"
 
+[function]
 func_decl = ["diy", "DIY"]
 func_parameter_seperator = [":", "with"]
 func_return = "yeet"
+
+[conditions]
+cond_if = "Q:"
+cond_if2 = "A:"
+cond_brackets_open = ":)"
+cond_brackets_close = ":("
+cond_while = "fruitloop"
+cond_for = "4"
 
 [logical_operators]
 not = "not the"
@@ -25,5 +34,8 @@ equal = "€"
 less_equal = "v€"
 less_than = "v"
 
-
-
+[special_functions]
+spec_output = ["lol", "LOL"]
+spec_input = "gimme"
+spec_open = "open"
+spec_close = ["Fuck off", "FUCK OFF"]
