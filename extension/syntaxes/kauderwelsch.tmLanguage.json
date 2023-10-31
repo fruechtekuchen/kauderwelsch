@@ -3,10 +3,29 @@
 	"name": "kauderwelsch",
 	"patterns": [
 		{
-			"include": "#keywords"
+			"begin": "^\\s*(diy)\\s+(\\w+)\\s*\\:",
+			"beginCaptures": {
+				"1": {
+					"name": "storage.type.function.kdw"
+				},
+				"2": {
+					"name": "entity.name.function.kdw"
+				}
+			},
+			"patterns": [
+				{
+					"name": "variable.parameter.kdw",
+					"match": "\\b\\w+\\b"
+				}
+			],
+			"end": "$",
+			"name": "meta.function.kdw"
 		},
 		{
-			"include": "#constants"
+			"include": "#expression"
+		},
+		{
+			"include": "#keywords"
 		},
 		{
 			"include": "#strings"
@@ -20,11 +39,22 @@
 			"patterns": [
 				{
 					"name": "keyword.control.kdw",
-					"match": "(?i)\\b(is|fruitloop|diy|noob|yeet)\\b"
+					"match": "(?i)\\b(is|fruitloop|noob|yeet)\\b"
 				},
 				{
 					"name": "support.function.special.kdw",
 					"match": "(?i)\\b(lol|afk|kys)\\b"
+				}
+			]
+		},
+		"expression": {
+			"patterns": [
+				{
+					"include": "#constants"
+				},
+				{
+					"name": "keyword.operator.kdw",
+					"match": "\\b(v=|\\^=|v=|\\^|v|=|w/o|w/|x|/)\\b"
 				}
 			]
 		},
