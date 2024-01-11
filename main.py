@@ -1,4 +1,5 @@
-from kauderwelsch.parser import RDParser
+from kauderwelsch.zeh.parser import Parser
+from kauderwelsch.zeh.transpiler import Transpiler
 import sys
 import os
 
@@ -11,9 +12,11 @@ if __name__ == "__main__":
     if ext != ".kdw":
         print("Invalid file")
         exit()
-    out = name + ".kdw.py"
+    out = name + ".c"
     # if os.path.exists(out):
     #     os.system(f"rm {out}")
-    parser = RDParser(file)
+    parser = Parser(file)
     parser.parse()
-    parser.write(out)
+    transpiler = Transpiler(parser.ast, parser.scopes)
+    transpiler.transpile()
+    transpiler.write(out)
