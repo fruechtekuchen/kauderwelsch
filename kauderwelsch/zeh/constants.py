@@ -16,4 +16,25 @@ IDENTIFIER = r"\w+"
 VALUE = r"\b[+-]?\d+\b"
 OPERATORS = r"w/o|w/|x|/"
 
-RESERVED = ["noob", "diy", "yeet", "lol", "kys", "afk", "is", "with", "x"]
+OP_TRANS = {
+    "w/o": "-",
+    "w/": "+",
+    "x": "*",
+    "/": "/",
+}
+
+RESERVED = [
+    "noob",
+    "diy",
+    "yeet",
+    "lol",
+    "kys",
+    "afk",
+    "is",
+    "with",
+    "x",
+]
+TYPE = r"\w+\*?"
+
+S_GLOBAL = "0"
+S_ROOT = "1"

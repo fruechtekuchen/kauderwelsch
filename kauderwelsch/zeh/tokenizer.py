@@ -28,6 +28,7 @@ class Tokenizer:
             return ""
         if m := re.match(pattern, self.buffer[self.buffer_index :]):
             self.buffer_index += m.end()
+            self.char_index += m.end()
             return m
         return ""
 

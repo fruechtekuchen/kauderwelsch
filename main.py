@@ -17,6 +17,6 @@ if __name__ == "__main__":
     #     os.system(f"rm {out}")
     parser = Parser(file)
     parser.parse()
-    transpiler = Transpiler(parser.ast, parser.scopes)
+    transpiler = Transpiler(parser.ast, parser.namespace)
     transpiler.transpile()
     transpiler.write(out)
